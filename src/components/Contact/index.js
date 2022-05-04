@@ -1,7 +1,76 @@
+import Loader from 'react-loaders';
+import AnimatedLetters from '../AnimatedLetters'
 import './index.scss'
+import emailjs from '@emailjs/browser'
+import { useState, useEffect, useRef } from 'react';
 
 const Contact = () => {
-  return <div>Contact</div>;
+  const [letterClass, setLetterClass] = useState()
+  const refForm = useRef()
+
+  const title = "Contact me"
+  const titleArray = Array.from({length: title.length}, (_, i) => title[i])
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLetterClass('text-animate-hover')
+    }, 3000)
+  })
+
+  const sendEmail = (e) => {
+    e.preventDefault()
+
+    emailjs.sendForm('contact_service', 'contact_form', refForm.current, 'AN9zL9ZyAfid1mynF')
+    .then(
+      () => {
+        alert('Message successfully sent!')
+        window.location.reload(false)
+      },
+      () => {
+        alert('Failed to send the message, please try again')
+      }
+    )
+  }
+    
+  return (
+  <>
+    <div className='container contact-page'>
+      <div className='text-zone'>
+        <h1>
+            <AnimatedLetters
+                letterClass={letterClass}
+                strArray={titleArray}
+                idx={15}
+            />
+        </h1>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+        <div className='contact-form'>
+        <form ref={refForm} onSubmit={sendEmail}>
+          <ul>
+            <li className='half'>
+              <input type='text' name='name' placeholder='Name' required />
+            </li>
+            <li className='half'>
+              <input type='email' name='email' placeholder='Email' required />
+            </li>
+            <li>
+              <input placeholder='Subject' type='text' name='subject' required />
+            </li>
+            <li>
+              <textarea placeholder='Message' name='message' required></textarea>
+            </li>
+            <li>
+              <input type='submit' className='flat-button' value='SEND' />
+            </li>
+          </ul>
+        </form>
+        </div>
+      </div>
+    </div>
+    <Loader type='pacman' />
+  </>);
 };
 
 export default Contact;
